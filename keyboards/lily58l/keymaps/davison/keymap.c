@@ -4,7 +4,24 @@ enum layers {
     _QWERTY = 0,
     _LOWER,
     _RAISE,
-    _ADJUST
+    _NUMPAD
+};
+
+// Tap Dance delcarations
+enum {
+    TD_LSFT_CAPS,
+    TD_RSFT_CAPS,
+    TD_LOWER_NUMPAD
+};
+
+// Tap Dance definitions
+qk_tap_dance_action_t tap_dance_actions[] = {
+    // Tap once for LShift, twice for Caps Lock
+    [TD_LSFT_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_CAPS),
+    // Tap once for RShift, twice for Caps Lock
+    [TD_RSFT_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_RSFT, KC_CAPS),
+    // Tap once for LOWER, twice for NUMPAD
+    [TD_LOWER_NUMPAD] = ACTION_TAP_DANCE_DOUBLE(_LOWER, _NUMPAD),
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -28,8 +45,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_ESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, \
   KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_EQUAL, \
   KC_LCTRL, KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT, \
-  KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_LBRC,  KC_RBRC,  KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,  KC_RSFT, \
-                      KC_LALT, LT(_LOWER, KC_SPC), KC_LGUI, KC_SPC,  KC_ENT, KC_BSPC, LT(_RAISE, KC_ESC), KC_BSLS\
+  TD_LSFT_CAPS,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_LBRC,  KC_RBRC,  KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, TD_RSFT_CAPS, \
+                      KC_LALT, TD_LOWER_NUMPAD, KC_LGUI, KC_SPC,  KC_ENT, KC_BSPC, _RAISE, KC_BSLS\
 ),
 /* LOWER
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -62,43 +79,43 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|  HOME |    |  END  |------+------+------+------+------+------|
  * |LShift|  F6  |  F7  |  F8  |  F9  | F10  |-------|    |-------|      |      |      |      |      |RShift|
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |RAISE |BackSP| RGUI |
+ *                   |      |      |      | /       /       \      \  |      |      |      |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
 
 [_RAISE] = LAYOUT( \
   _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______,                     _______, _______, _______, _______, _______, _______, \
-  KC_LCTRL, KC_F1,  KC_F2,   KC_F3,   KC_F4,   KC_F5,                       KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX, \
-  KC_LSFT, KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,   KC_HOME,  KC_END,  KC_PLUS, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_RSFT, \
+  _______, _______, _______,KC_MS_UP, _______, _______,                     _______, _______, _______, _______, _______, _______, \
+  _______, _______, KC_MS_LEFT,KC_MS_DOWN,KC_MS_RIGHT, _______,             KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______,            _______, _______, _______, _______, _______, _______, _______, \
                              _______, _______, _______,  _______, _______,  _______, _______, _______ \
 ),
-/* ADJUST
+/* NUMPAD
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |      |      |      |      |      |      |                    |      |  7   |  8   |  9   |  -   |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------.    ,-------|      |      |RGB ON| HUE+ | SAT+ | VAL+ |
+ * |      |      |      |      |      |      |-------.    ,-------|      |  4   |  5   |  6   |  +   |      |
  * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------|    |-------|      |      | MODE | HUE- | SAT- | VAL- |
+ * |      |      |      |      |      |      |-------|    |-------|      |  1   |  2   |  3   |  =   |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |RAISE |BackSP| RGUI |
+ *                   |      |      |      | /       /       \      \  |      |  0   |  .   |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
-  [_ADJUST] = LAYOUT( \
+  [_NUMPAD] = LAYOUT( \
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, \
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD,\
-                             _______, _______, _______, _______, _______,  _______, _______, _______ \
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   KC_VOLU, KC_7 , KC_8 , KC_9 ,KC_MINS,_______, \
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   KC_MUTE, KC_4 , KC_5 , KC_6 ,KC_PLUS,_______, \
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_VOLD, KC_1 , KC_2 , KC_3 ,KC_EQL ,_______,\
+                             _______, _______, _______, _______, _______,  _______, KC_0, KC_DOT\
   )
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-  return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+  return update_tri_layer_state(state, _LOWER, _RAISE, _NUMPAD);
 }
 
 #ifdef OLED_DRIVER_ENABLE
@@ -136,8 +153,8 @@ static void render_status(void) {
         case _RAISE:
             oled_write_P(PSTR("Raise\n"), false);
             break;
-        case _ADJUST:
-            oled_write_P(PSTR("Adjust\n"), false);
+        case _NUMPAD:
+            oled_write_P(PSTR("Numpad\n"), false);
             break;
         default:
             oled_write_P(PSTR("Undefined\n"), false);
